@@ -1,0 +1,2 @@
+Malware: how to infect a computer; how to detect virus
+Veracrypt: Encrypt a partition with another fake partition inside

@@ -9,7 +9,11 @@ public class DualVol extends Tea{
 
 	// Extends password from x character to the size of volume that's being encrypted
 	// Output is String extended to the size of volume
-	private String passExtend(String password, int size){
+	private char[] passExtend(String password, int size){
+		// set return char array size of "int size"
+		char[] retArr = new char[size];
+
+		retArr = password % size;
 
 
 	} // end passExtend()
@@ -34,13 +38,13 @@ public class DualVol extends Tea{
 
 	// Encrypt the first "fake" volume
 	// Output is volume (String)
-	public String firstEncrypt(String Volume, String key){}
+	private String firstEncrypt(char[] Volume, String key){}
 
 	// Encrypt the second "real volume"
 	// after the first volume has been encrypted
-	public String secondEncrypt(String Volume, String key){}
+	private String secondEncrypt(char[] Volume, String key, int offset){}
 
 	// Decrypt volume, it doesn't differentiate between real or fake volume
-	public String decryptVol(String Volume, String key){}
+	private String decryptVol(char[] Volume, String key, int offset){}
 
 }

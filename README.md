@@ -25,7 +25,7 @@ I know this method through truecrypt.
 
 * Public Method for create volume using true random number generator
 * Private Method for expand password x to the size of volume
-*
+* When encrypting second/third volume, we need offset.
 
 
 ---
@@ -38,6 +38,16 @@ _Need Sources to support them_
 	of empty space).
 * Need to expand password
 
+---
+**Problem Needs to Solved**
+
+* How to expand password?
+* How to exactly store them?
+
+---
+**Limitation**
+
+* Flash memory writes everywhere.
 
 ---
 **Souce:**
