@@ -1,4 +1,4 @@
-package cs492.multiencryption;
+package cs492.gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
