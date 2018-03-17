@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cs492.dualencrypt;
-
-import java.util.BitSet;
+package cs492.multiencryption;
 
 /**
  * This whole class is set a "static", much like Math class()

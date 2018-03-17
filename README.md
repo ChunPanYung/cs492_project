@@ -54,10 +54,17 @@ _Need Sources to support them_
 **Souce:**
 
 [Hidden Encrypted Volumes: keep data safe and secret](https://www.linuxvoice.com/hidden-encrypted-volumes-keep-data-safe-and-secret/)
+
 [Primtive Data Types](https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html)
+
 [BigInteger unsigned left or right shift](https://stackoverflow.com/questions/5281852/biginteger-unsigned-left-or-right-shift#5281916)
+
 [Tutorial: Java Native Interface](http://www3.ntu.edu.sg/home/ehchua/programming/java/JavaNativeInterface.html)
+
 [How to generate a random number in C?](https://stackoverflow.com/questions/822323/how-to-generate-a-random-number-in-c/39475626#39475626)
 
+[How to open and read a text file in Java (FileReader, BufferedReader)](https://alvinalexander.com/blog/post/java/how-open-read-file-java-string-array-list)
+
+[Developering a File Browser In JavaFX](http://jfx.wikia.com/wiki/Developing_a_File_Browser_in_JavaFX)
 
 
