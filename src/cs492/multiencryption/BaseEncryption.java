@@ -1,6 +1,9 @@
 package cs492.multiencryption;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 public class BaseEncryption {
@@ -25,42 +28,62 @@ public class BaseEncryption {
 
 
 
+	// Hashing password and return 128bits (long[2])
+	// Output long array
+	public static long[] passExtend(String text) throws NoSuchAlgorithmException {
+		// Set algorithm to sha-256
+		MessageDigest md = MessageDigest.getInstance( "SHA-256" );
 
+		// Get the text as UTF-16BE
+		md.update( text.getBytes( StandardCharsets.UTF_16BE ) );
+		// Convert it to byte array
+		byte[] digest = md.digest();
 
+		// return long array
+		return toLongArray(digest);
+	}
 
-	// Extends password from x character to the size of volume that's being encrypted
-	// Output is String extended to the size of volume
-	private char[] passExpand(String password, int size){
-		// Cast the size into BigInteger
-		BigInteger bigSize = BigInteger.valueOf(size);
-		// Cast the string as BigInteger
-		BigInteger bigInt = new BigInteger(password);
-		// Use mod to expand the password
-		BigInteger modInt = bigInt.mod(bigSize);
+	// Casting and concatenage byte[] into long[]
+	// return long[]
+	// It's asuume that char[] is in the muliplication of 8 (need improvement)
+	private static long[] toLongArray(byte[] arr) {
+		// Array should be in the number of 8x,
+		// because long int is 8 bytes long
+		// and char is 2 bytes long
+		if (arr.length % 8 != 0) {
+			throw new ArrayIndexOutOfBoundsException();
+		} // end if statement
 
-		// set return char array size of "int size"
-		char[] retArr = new char[size];
-		// Get the max size(value) of char
-		char maxValue = (char) -1;
-		// set a char to max value for AND operation to get the last 16 bit of modInt
-		BigInteger maxCharSize = new BigInteger("-1");
+		// int i: length of return array == (arr.length / 8)
+		int longSize = arr.length / 8;
+		// Initializing long array
+		long[] retVal = new long[longSize];
 
-		// put the value from modInt into array retArr
-		for (int i = size - 1; i > -1; i--) {
-			// put the modInt into retArr array using shifting operation
-			retArr[i] = (char) modInt.mod(maxCharSize);
-		} // end for loop
+		// establish i as the last array index of long int,
+		// and k as the last array index of char.
+		int i = longSize - 1;
+		int k = arr.length - 1;
+		int byteInLong = 0;
 
+		// use for loop to cast char[] into long[]
+		while (i >= 0) {
+			// For every long(64-bit), we put 8 bytes (8-bit each) into it
+			while (byteInLong < 16) {
+				// shift left by 8 bits
+				retVal[i] = retVal[i] << 8;
+				// Casting 8 bytes into single long int
+				retVal[i] = retVal[i] & arr[k];
+				// increment charInLong: it indicates how many char has cast into long so far
+				byteInLong++;
+				// decrease current index of char array
+				k--;
+			} // end while loop
 
-	return retArr;
+			// Decrease i
+			i--;
+		} // end while loop
 
-	} // end passExtend()
-
-	// Get a character and shift them left/right by x amount
-	//
-	// Input: single character, size to shift, boolean (true means shift right, false means shift left)
-	// Output: bit that's being shift out, shifted single character
-
-
+		return retVal;
+	} // end toLongArray()
 
 } // end class()

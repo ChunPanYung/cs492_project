@@ -67,4 +67,5 @@ _Need Sources to support them_
 
 [Developering a File Browser In JavaFX](http://jfx.wikia.com/wiki/Developing_a_File_Browser_in_JavaFX)
 
+[The hash function RIPEMD-160](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html#Outline)
 
