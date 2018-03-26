@@ -1,10 +1,12 @@
 package cs492.dualencrypt;
 
 
+import cs492.teaencryption.Tea;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class DualVol extends Tea{
+public class DualVol extends Tea {
 
 	// Inherit: private final static int DELTA = 0x9e3779b9;
 

@@ -5,6 +5,8 @@
  */
 package cs492.dualencrypt;
 
+import cs492.teaencryption.Tea;
+
 /**
  *
  * @author chun pan yung

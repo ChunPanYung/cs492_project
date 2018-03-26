@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cs492.dualencrypt;
+package cs492.teaencryption;
 
 import java.util.BitSet;
 
