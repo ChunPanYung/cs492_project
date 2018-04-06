@@ -69,3 +69,4 @@ _Need Sources to support them_
 
 [The hash function RIPEMD-160](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html#Outline)
 
+[How to Read and Write Text File in Java](http://www.codejava.net/java-se/file-io/how-to-read-and-write-text-file-in-java)
