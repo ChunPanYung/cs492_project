@@ -98,6 +98,7 @@ public class BaseEncryption extends Tea {
 	// Casting and concatenate byte[] into long[]
 	// return long[]
 	// It's assume that char[] is in the multiplication of 8 (need improvement)
+	// It maybe useless for the moment
 	private static long[] toLongArray(byte[] arr) {
 		// Array should be in the number of 8x,
 		// because long int is 8 bytes long
@@ -137,5 +138,13 @@ public class BaseEncryption extends Tea {
 
 		return retVal;
 	} // end toLongArray()
+
+	// Encrypt the text using Tea Encryption and hashed password
+	// The length of hash is 44
+	public void encryptVolume(char[] arr, String hash) {
+
+
+
+	}
 
 } // end class()

@@ -2,6 +2,7 @@ package cs492.multiencryption;
 
 import org.junit.jupiter.api.*;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 
 public class BaseEncryptionTest {
 
-	@Disabled("Tested randomZeroes()")
+	@Disabled
 	@Test
 	public void randomZeroes() {
 		// Call method, convert char[] to string
@@ -55,8 +56,20 @@ public class BaseEncryptionTest {
 
 	}
 
+	@Disabled
 	@Test
-	public void passExtend() {
+	public void writeRead() throws IOException {
+		String pudding = "Pudding is the best dessert you can have! OwO";
+
+		BaseEncryption.saveVolume(pudding);
+		BaseEncryption.loadVolume("Pudding.txt");
+
+	}
+
+
+	@Test
+	public void teaExample() {
+
 	}
 
 
