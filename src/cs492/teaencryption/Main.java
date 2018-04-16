@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cs492.dualencrypt;
+package cs492.teaencryption;
 
 import cs492.teaencryption.Tea;
 
@@ -13,21 +13,19 @@ import cs492.teaencryption.Tea;
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-	
-	
-	// test here	
-	test(01, "0xAF6BABCDEF00F000FFFFFFFFABCDEF01", "0x01CA456789ABCDEF");
-	test(02, "0xa56babcdf000ffffffffffffabcdef01", "0x123456789abcdef");
-	test(03, "0xa56babcdffffffffffffffffabcdef01", "0x123456789abcdef");
-	
-    } // end main()
-    
-    private static void test(int i, String key, String plainText) {
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) {
+		// TODO code application logic here
+		// test here
+		test(01, "0xAF6BABCDEF00F000FFFFFFFFABCDEF01", "0x01CA456789ABCDEF");
+		test(02, "0xa56babcdf000ffffffffffffabcdef01", "0x123456789abcdef");
+		test(03, "0xa56babcdffffffffffffffffabcdef01", "0x123456789abcdef");
+
+	} // end main()
+
+	private static void test(int i, String key, String plainText) {
 	
 	System.out.println("TEST CASE " + i);
 	
@@ -44,7 +42,5 @@ public class Main {
 	System.out.print("\n\n");
 	
 	
-    } // end test()
-   
-    
-}
+	} // end test()
+} // end main()

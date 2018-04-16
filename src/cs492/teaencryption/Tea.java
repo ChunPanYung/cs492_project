@@ -15,12 +15,13 @@ import java.util.BitSet;
  *
  * @author chun pan yung
  */
-public class Tea {
+	public class Tea {
 
 	private final static int DELTA = 0x9e3779b9;
 
 	// String key should be in the form of Hex: "0xAAA..."
 	// plainText should be euqaled or less than 128
+	// plainText == 16, key == 32
 	//
 	// If null return, error
 	public static String encrypt(String plainText, String key) {
@@ -50,6 +51,7 @@ public class Tea {
 
 	} // end of encrypt()
 
+	// plainText == 16, key == 32
 	public static String decrypt(String cipherText, String key) {
 		// break the key into four parts
 		int[] k = keyToArr(key);

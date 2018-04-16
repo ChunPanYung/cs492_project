@@ -1,4 +1,4 @@
-package cs492.dualencrypt;
+package cs492.multiencryption;
 
 
 import cs492.teaencryption.Tea;
@@ -6,25 +6,11 @@ import cs492.teaencryption.Tea;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-public class DualVol extends Tea {
+public class MultiVolume extends Tea {
 
 	// Inherit: private final static int DELTA = 0x9e3779b9;
 
-	// Extends password from x character to the size of volume that's being encrypted
-	// Output is String extended to the size of volume
-	private char[] passExpand(String password, int size){
-		// set return char array size of "int size"
-		char[] retArr = new char[size];
-		// Cast the size into BigInteger
-		BigInteger bigSize = BigInteger.valueOf(size);
-		// Cast the string as BigInteger
-		BigInteger bigInt = new BigInteger(password);
-		// Use mod to expand the password
-		BigInteger modInt = bigInt.mod(bigSize);
 
-
-
-	} // end passExtend()
 
 	// Divide a char (16-bit) primitive data type into 2 bytes (1 byte == 8 bits)
 	//
@@ -61,25 +47,6 @@ public class DualVol extends Tea {
 
 	} // end mergeBytes()
 
-
-	// Generate random number according to size
-	// Output: randomly generated volume
-	private char[] createVol (int size){
-		// Create array according to size
-		char[] array = new char[size];
-
-		// Initializing number generator
-		SecureRandom sr = new SecureRandom();
-
-		// Fill up the whole array
-		for (char pudding : array) {
-			pudding = (char) sr.nextInt();
-
-		} // end for loop
-
-		return array;
-	} // end createVol()
-
 	// Encrypt the first "fake" volume
 	// Output is volume (String)
 	public String firstEncrypt(char[] Volume, String key){
@@ -102,11 +69,6 @@ public class DualVol extends Tea {
 		return null;
 	}
 
-	// BigInteger: Unsigned shift right
-	private BitInteger bitIntUnsignedShiftRight (BigInteger bigInt, int num) {
 
 
-	}
-
-
-} // end DualVol()
+} // end MultiVolume()
