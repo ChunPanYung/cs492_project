@@ -155,7 +155,7 @@ public class BaseEncryption extends Tea {
 
 	// It will use the method from Tea.java to encrypt the txt
 	//
-	public ArrayList<Character> encryptVolume(char[] txt, String hash) {
+	public static ArrayList<Character> encryptVolume(char[] txt, String hash) {
 
 		// Get the length of txt so it doesn't need to calculate twice
 		int txtLen = txt.length;
@@ -184,7 +184,7 @@ public class BaseEncryption extends Tea {
 
 	// It will use the method from Tea.java to encrypt the txt
 	//
-	public ArrayList<Character> decryptVolume(char[] txt, String hash) {
+	public static ArrayList<Character> decryptVolume(char[] txt, String hash) {
 
 		// Get the length of txt so it doesn't need to calculate twice
 		int txtLen = txt.length;

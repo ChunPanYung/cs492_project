@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
@@ -31,6 +32,7 @@ public class BaseEncryptionTest {
 
 	}
 
+	@Disabled
 	@Test
 	public void passwordHash() throws InvalidKeySpecException, NoSuchAlgorithmException {
 		// List of char array as password
@@ -68,7 +70,23 @@ public class BaseEncryptionTest {
 
 
 	@Test
-	public void teaExample() {
+	public void cryptoVolume() {
+		// Make a string first
+		String str = "I love Pudding";
+		// Convert to char array
+		char[] arr = str.toCharArray();
+
+
+		// Use randomZeroes() as hash for testing
+		String hash = new String(BaseEncryption.randomZeroes(44));
+
+		ArrayList<Character> charList = BaseEncryption.encryptVolume(arr, hash);
+
+		// Print
+		System.out.println(charList);
+
+
+
 
 	}
 
