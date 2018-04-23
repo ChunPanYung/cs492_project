@@ -2,11 +2,11 @@ package cs492.multiencryption;
 
 import cs492.teaencryption.Tea;
 
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -96,43 +96,32 @@ public class BaseEncryption extends Tea {
 		return enc.encodeToString(hash);
 	}
 
+	// Get the randomly generated salt
+	// Package-private so we can test this method
+	static byte[] getNextSalt() {
+		// byte array
+		byte[] salt = new byte[16];
+		RANDOM.nextBytes(salt);
+
+		// return salt
+		return salt;
+	}
+
 
 	// Encrypt the text using Tea Encryption and hashed password
 	// The length of hash is 44
 	// It will use the method from Tea.java to encrypt the txt
-	public static ArrayList<Character> encryptVolume(char[] txt, String key) {
+	public static String encryptVolume(String plainText, String key) {
 
-		// Get the length of txt so it doesn't need to calculate twice
-		int txtLen = txt.length;
-		// Initialize the size of ArrayList the same size as txt
-		ArrayList<Character> charList = new ArrayList<Character>(txtLen);
+		try {
+			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, key);
+			return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes("UTF-8")));
+		} catch (Exception e) {
+			System.out.println("Error while encrypting: " + e.toString());
+		} // end try...catch()
 
-		// Get portion of hash (first 32 characters only)
-		String partKey = key.substring(0, 32);
-
-		String plainText; // Need to convert the array to String before passing in
-		int i = 0; // keep track of current index
-
-		while (i < txtLen && ((txtLen - i) > 16)) {
-			// Copy next 16-bit into plainText
-			plainText = Arrays.copyOfRange(txt, i, i + 16).toString();
-			// Encrypt using plainText and partKey, then convert the string to
-			// ArrayList
-
-			charList.addAll(Arrays.asList(encrypt(plainText, partKey).toCharArray()));
-			// increment
-			i += 15;
-		} // end while loop
-
-		// Process any remaining
-		if (i != txtLen) {
-			// Copy next 16-bit into plainText
-			plainText = Arrays.copyOfRange(txt, i, txtLen).toString();
-			// ArrayList
-			charList.addAll(stringToList(encrypt(plainText, partKey)));
-		}
-
-		return charList;
+		return null;
 	} // end encryptVolume()
 
 	// Decrypt the text using Tea Encryption and hashed password

@@ -2,8 +2,14 @@ package cs492.multiencryption;
 
 import org.junit.jupiter.api.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.ShortBufferException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,27 +70,16 @@ public class BaseEncryptionTest {
 
 
 	@Test
-	public void encryptTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
+	public void encryptTest() throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, ShortBufferException, NoSuchProviderException, InvalidKeyException {
 
-		// List of char array as password
-		char[] password = {'P', 'a', 'n', 'c', 'a', 'k', 'e'};
-		// Generate password and store their output :3
-		String key = BaseEncryption.passwordHash(password);
+		byte[] plainText = "Heelow".getBytes();
+		String password = "Muffin3344448812";
 
-		// Use randomZeroes() as hash for testing
-		char[] txt = (BaseEncryption.randomZeroes(100));
-		// print hash
-		System.out.println(txt);
+		System.out.println("The Plain Text is: " + plainText);
 
-		System.out.println("-----------");
+		byte[] cipherText = BaseEncryption.encryptVolume(plainText, password);
 
-		ArrayList<Character> charList = BaseEncryption.encryptVolume(txt, key);
-
-		// Print
-		System.out.println(charList.size());
-
-
-
+		System.out.println("\nThe cipher Text is: " + cipherText);
 
 	}
 
