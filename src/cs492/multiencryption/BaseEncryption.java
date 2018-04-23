@@ -19,6 +19,7 @@ public class BaseEncryption extends Tea {
 	// Class variables
 	private static final SecureRandom RANDOM = new SecureRandom();
 	private static final int KEYLEN = 256;
+	private static final byte[] SALT = {13, 99, 69};
 
 
 	// Generate random number according to size
@@ -83,9 +84,9 @@ public class BaseEncryption extends Tea {
 
 	// Hashing password and return 256 bits (long[2])
 	// Output long array
-	static String passwordHash(char[] password, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	static String passwordHash(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-		PBEKeySpec spec = new PBEKeySpec(password, salt, Short.MAX_VALUE, KEYLEN);
+		PBEKeySpec spec = new PBEKeySpec(password, SALT, Short.MAX_VALUE, KEYLEN);
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 		byte[] hash = keyFactory.generateSecret(spec).getEncoded();
 		Base64.Encoder enc = Base64.getEncoder();
@@ -95,67 +96,10 @@ public class BaseEncryption extends Tea {
 	}
 
 
-	// Get the randomly generated salt
-	// Package-private so we can test this method
-	static byte[] getNextSalt() {
-		// byte array
-		byte[] salt = new byte[16];
-		RANDOM.nextBytes(salt);
-
-		// return salt
-		return salt;
-	}
-
-	// Casting and concatenate byte[] into long[]
-	// return long[]
-	// It's assume that char[] is in the multiplication of 8 (need improvement)
-	// It maybe useless for the moment
-	private static long[] toLongArray(byte[] arr) {
-		// Array should be in the number of 8x,
-		// because long int is 8 bytes long
-		// and char is 2 bytes long
-		if (arr.length % 8 != 0) {
-			throw new ArrayIndexOutOfBoundsException();
-		} // end if statement
-
-		// int i: length of return array == (arr.length / 8)
-		int longSize = arr.length / 8;
-		// Initializing long array
-		long[] retVal = new long[longSize];
-
-		// establish i as the last array index of long int,
-		// and k as the last array index of char.
-		int i = longSize - 1;
-		int k = arr.length - 1;
-		int byteInLong = 0;
-
-		// use for loop to cast char[] into long[]
-		while (i >= 0) {
-			// For every long(64-bit), we put 8 bytes (8-bit each) into it
-			while (byteInLong < 16) {
-				// shift left by 8 bits
-				retVal[i] = retVal[i] << 8;
-				// Casting 8 bytes into single long int
-				retVal[i] = retVal[i] & arr[k];
-				// increment charInLong: it indicates how many char has cast into long so far
-				byteInLong++;
-				// decrease current index of char array
-				k--;
-			} // end while loop
-
-			// Decrease i
-			i--;
-		} // end while loop
-
-		return retVal;
-	} // end toLongArray()
-
 	// Encrypt the text using Tea Encryption and hashed password
 	// The length of hash is 44
-
 	// It will use the method from Tea.java to encrypt the txt
-	//
-	public static ArrayList<Character> encryptVolume(char[] txt, String hash) {
+	public static ArrayList<Character> encryptVolume(char[] txt, String key) {
 
 		// Get the length of txt so it doesn't need to calculate twice
 		int txtLen = txt.length;
@@ -165,15 +109,15 @@ public class BaseEncryption extends Tea {
 		// Variables for storing portion of char array (Pass it to encrypt())
 		String plainText;
 		// Get portion of hash (first 32 characters only)
-		String partHash = hash.substring(0, 32);
+		String partKey = key.substring(0, 32);
 
 
 		for (int i = 0; i < txtLen; i += 16) {
 			// Copy next 16-bit into plainText
 			plainText = Arrays.copyOfRange(txt, i, i + 15).toString();
-			// Encrypt using plainText and partHash, then convert the string to
+			// Encrypt using plainText and partKey, then convert the string to
 			// ArrayList
-			charList.addAll(stringToList(encrypt(plainText, partHash).substring(2)));
+			charList.addAll(stringToList(encrypt(plainText, partKey).substring(2)));
 		} // end for loop
 
 		return charList;

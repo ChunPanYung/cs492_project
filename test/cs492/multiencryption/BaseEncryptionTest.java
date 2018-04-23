@@ -23,14 +23,7 @@ public class BaseEncryptionTest {
 
 	}
 
-	@Disabled
-	@Test
-	public void getNextSalt() {
-		// Get an array of salt
-		byte[] pancake = BaseEncryption.getNextSalt();
-		System.out.println(Arrays.toString(pancake));
 
-	}
 
 	@Disabled
 	@Test
@@ -41,9 +34,9 @@ public class BaseEncryptionTest {
 		       password_3 = {'L', 'o', 'l', 'l',  'i', 'p', 'o', 'p'};
 
 		// Generate password and store their output :3
-		String pancake = BaseEncryption.passwordHash(password_1, BaseEncryption.getNextSalt());
-		String pudding = BaseEncryption.passwordHash(password_2, BaseEncryption.getNextSalt());
-		String lollipop = BaseEncryption.passwordHash(password_3, BaseEncryption.getNextSalt());
+		String pancake = BaseEncryption.passwordHash(password_1);
+		String pudding = BaseEncryption.passwordHash(password_2);
+		String lollipop = BaseEncryption.passwordHash(password_3);
 
 		// Print password and its length
 		System.out.println("Password: " + pancake);
@@ -69,6 +62,7 @@ public class BaseEncryptionTest {
 	}
 
 
+	@Disabled
 	@Test
 	public void cryptoVolume() {
 		// Make a string first
@@ -78,9 +72,10 @@ public class BaseEncryptionTest {
 
 
 		// Use randomZeroes() as hash for testing
-		String hash = new String(BaseEncryption.randomZeroes(44));
-
-		ArrayList<Character> charList = BaseEncryption.encryptVolume(arr, hash);
+		String key = new String(BaseEncryption.randomZeroes(44));
+		// pirnt hash
+		System.out.println(key);
+		ArrayList<Character> charList = BaseEncryption.encryptVolume(arr, key);
 
 		// Print
 		System.out.println(charList);
