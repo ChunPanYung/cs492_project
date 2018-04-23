@@ -62,23 +62,26 @@ public class BaseEncryptionTest {
 	}
 
 
-	@Disabled
-	@Test
-	public void cryptoVolume() {
-		// Make a string first
-		String str = "I love Pudding";
-		// Convert to char array
-		char[] arr = str.toCharArray();
 
+	@Test
+	public void encryptTest() throws InvalidKeySpecException, NoSuchAlgorithmException {
+
+		// List of char array as password
+		char[] password = {'P', 'a', 'n', 'c', 'a', 'k', 'e'};
+		// Generate password and store their output :3
+		String key = BaseEncryption.passwordHash(password);
 
 		// Use randomZeroes() as hash for testing
-		String key = new String(BaseEncryption.randomZeroes(44));
-		// pirnt hash
-		System.out.println(key);
-		ArrayList<Character> charList = BaseEncryption.encryptVolume(arr, key);
+		char[] txt = (BaseEncryption.randomZeroes(100));
+		// print hash
+		System.out.println(txt);
+
+		System.out.println("-----------");
+
+		ArrayList<Character> charList = BaseEncryption.encryptVolume(txt, key);
 
 		// Print
-		System.out.println(charList);
+		System.out.println(charList.size());
 
 
 

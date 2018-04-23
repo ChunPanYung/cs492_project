@@ -91,7 +91,7 @@ public class TeaMod {
 
 		// index for ret.
 		int i = 3;
-		// while the length is greater than or equal to 10
+		// while the length is greater than or equal to 8
 		while (len >= 8) {
 			// parse the last 8 hex number into rest[i]
 			retValue[i] = (int) Long.parseLong(key.substring(len - 8, len), 16);
@@ -134,7 +134,7 @@ public class TeaMod {
 
 		// for keep track of index
 		int i = 1;
-		// while the len is greater or equal to 10
+		// while the len is greater or equal to 8
 		while (len >= 8) {
 			// parse the last 8 hex number into rest[i]
 			retValue[i] = (int) Long.parseLong(str.substring(len - 8, len), 16);

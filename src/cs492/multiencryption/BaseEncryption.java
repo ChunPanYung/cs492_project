@@ -11,6 +11,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 
 import static cs492.multiencryption.CryptoUtil.stringToList;
 
@@ -106,19 +107,30 @@ public class BaseEncryption extends Tea {
 		// Initialize the size of ArrayList the same size as txt
 		ArrayList<Character> charList = new ArrayList<Character>(txtLen);
 
-		// Variables for storing portion of char array (Pass it to encrypt())
-		String plainText;
 		// Get portion of hash (first 32 characters only)
 		String partKey = key.substring(0, 32);
 
+		String plainText; // Need to convert the array to String before passing in
+		int i = 0; // keep track of current index
 
-		for (int i = 0; i < txtLen; i += 16) {
+		while (i < txtLen && ((txtLen - i) > 16)) {
 			// Copy next 16-bit into plainText
-			plainText = Arrays.copyOfRange(txt, i, i + 15).toString();
+			plainText = Arrays.copyOfRange(txt, i, i + 16).toString();
 			// Encrypt using plainText and partKey, then convert the string to
 			// ArrayList
-			charList.addAll(stringToList(encrypt(plainText, partKey).substring(2)));
-		} // end for loop
+
+			charList.addAll(Arrays.asList(encrypt(plainText, partKey).toCharArray()));
+			// increment
+			i += 15;
+		} // end while loop
+
+		// Process any remaining
+		if (i != txtLen) {
+			// Copy next 16-bit into plainText
+			plainText = Arrays.copyOfRange(txt, i, txtLen).toString();
+			// ArrayList
+			charList.addAll(stringToList(encrypt(plainText, partKey)));
+		}
 
 		return charList;
 	} // end encryptVolume()
@@ -146,7 +158,7 @@ public class BaseEncryption extends Tea {
 			cipherText = Arrays.copyOfRange(txt, i, i + 15).toString();
 			// Encrypt using plainText and partHash, then convert the string to
 			// ArrayList
-			charList.addAll(stringToList(decrypt(cipherText, partHash).substring(2)));
+			charList.addAll(stringToList(decrypt(cipherText, partHash)));
 		} // end for loop
 
 		return charList;
