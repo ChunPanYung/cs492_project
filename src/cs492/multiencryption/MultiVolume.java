@@ -1,12 +1,9 @@
 package cs492.multiencryption;
 
 
-import cs492.teaencryption.Tea;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
-public class MultiVolume extends Tea {
+public class MultiVolume {
 
 	// Inherit: private final static int DELTA = 0x9e3779b9;
 

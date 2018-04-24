@@ -1,25 +1,24 @@
 package cs492.multiencryption;
 
-import cs492.teaencryption.Tea;
-
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
 
 import static cs492.multiencryption.CryptoUtil.stringToList;
 
-public class BaseEncryption extends Tea {
+public class BaseEncryption {
 
 	// Class variables
 	private static final SecureRandom RANDOM = new SecureRandom();
 	private static final int KEYLEN = 256;
+	private static final int ITERATION = 65536;
 	private static final byte[] SALT = {13, 99, 69};
 
 
@@ -81,47 +80,58 @@ public class BaseEncryption extends Tea {
 
 	} // end loadVolume
 
+	// Get random salt
+	static byte[] getSalt() {
+		// use SecureRandom to generate bytes
+		byte[] retVal = new byte[16];
+		RANDOM.nextBytes(retVal);
+
+		return retVal;
+	} // end getSalt()
 
 
 	// Hashing password and return 256 bits (long[2])
 	// Output long array
-	static String passwordHash(char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	static SecretKey passwordHash(String password, byte[] salt)
+		throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-		PBEKeySpec spec = new PBEKeySpec(password, SALT, Short.MAX_VALUE, KEYLEN);
-		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-		byte[] hash = keyFactory.generateSecret(spec).getEncoded();
-		Base64.Encoder enc = Base64.getEncoder();
+		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION, KEYLEN);
+		SecretKeyFactory secretKeyFactory =
+			SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 
-		// return String
-		return enc.encodeToString(hash);
-	}
+		return secretKeyFactory.generateSecret(spec);
+	} // end passHash()
 
-	// Get the randomly generated salt
-	// Package-private so we can test this method
-	static byte[] getNextSalt() {
-		// byte array
-		byte[] salt = new byte[16];
-		RANDOM.nextBytes(salt);
+	// Get random IV
+	static IvParameterSpec getIV() {
+		// use SecureRandom to generate bytes
+		byte[] retVal = new byte[16];
+		RANDOM.nextBytes(retVal);
 
-		// return salt
-		return salt;
-	}
+		return new IvParameterSpec(retVal);
+	} // end getIV()
 
 
-	// Encrypt the text using Tea Encryption and hashed password
-	// The length of hash is 44
-	// It will use the method from Tea.java to encrypt the txt
-	public static String encryptVolume(String plainText, String key) {
+
+	public static byte[] encryptVolume(SecretKey key, String plainText,
+	                                   IvParameterSpec iv) {
+
+		Cipher cipher;
+		byte[] retVal = null;
+
 
 		try {
-			Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, key);
-			return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes("UTF-8")));
-		} catch (Exception e) {
-			System.out.println("Error while encrypting: " + e.toString());
-		} // end try...catch()
 
-		return null;
+			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+			cipher.doFinal(plainText.getBytes());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} // end try... catch()
+
+		return retVal;
+
 	} // end encryptVolume()
 
 	// Decrypt the text using Tea Encryption and hashed password
@@ -129,27 +139,23 @@ public class BaseEncryption extends Tea {
 
 	// It will use the method from Tea.java to encrypt the txt
 	//
-	public static ArrayList<Character> decryptVolume(char[] txt, String hash) {
+	public static byte[] decryptVolume(SecretKey key, String cipherText,
+	                                   IvParameterSpec iv) {
 
-		// Get the length of txt so it doesn't need to calculate twice
-		int txtLen = txt.length;
-		// Initialize the size of ArrayList the same size as txt
-		ArrayList<Character> charList = new ArrayList<Character>(txtLen);
+		Cipher decryption;
+		byte[] retVal = null;
 
-		// Variables for storing portion of char array (Pass it to encrypt())
-		String cipherText;
-		// Get portion of hash (first 32 characters only)
-		String partHash = hash.substring(0, 32);
+		try {
+
+			decryption = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			decryption.init(Cipher.DECRYPT_MODE, key, iv);
+			retVal = decryption.doFinal(cipherText.getBytes());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} // end try... catch()
 
 
-		for (int i = 0; i < txtLen; i += 16) {
-			// Copy next 16-bit into plainText
-			cipherText = Arrays.copyOfRange(txt, i, i + 15).toString();
-			// Encrypt using plainText and partHash, then convert the string to
-			// ArrayList
-			charList.addAll(stringToList(decrypt(cipherText, partHash)));
-		} // end for loop
-
-		return charList;
+		return retVal;
 	} // end encryptVolume()
 } // end class()

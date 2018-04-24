@@ -1,6 +1,9 @@
 package cs492.multiencryption;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 
 /**
  * Contains Utility function for BaseEncryption.java
@@ -32,5 +35,18 @@ public class CryptoUtil {
 		}
 		return arrList;
 	} // end stringToList()
+
+	// Convert from byte[] to String
+	public static String byteArrToStr(byte[] arr) {
+		return new String(arr, StandardCharsets.UTF_8);
+	} // end byteArrToStr()
+
+	// Convert from SecretKey to String
+	public static String keyToStr(SecretKey key) {
+
+		return Base64.getEncoder().encodeToString(key.getEncoded());
+
+	} // end keyToStr()
+
 
 }
