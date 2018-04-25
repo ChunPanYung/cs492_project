@@ -3,25 +3,25 @@ package cs492.multiencryption;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import static cs492.multiencryption.CryptoUtil.stringToList;
 
 public class BaseEncryption {
 
 	// Class variables
 	private static final SecureRandom RANDOM = new SecureRandom();
-	private static final int KEYLEN = 256;
-	private static final int ITERATION = 65536;
+	private static final int COUNT = 1000;
 	private static final byte[] SALT = {13, 99, 69};
-	private static final string ALGORITHM = "PBEWithHmacSHA256AndAES_256";
+	private static final String ALGORITHM = "PBEWithHmacSHA256AndAES_256";
 
+
+	public static String getAlgorithm() {
+	 return ALGORITHM;
+	}
 
 	// Generate random number according to size
 	// Output: randomly generated volume
@@ -91,16 +91,15 @@ public class BaseEncryption {
 	} // end getSalt()
 
 
-	// Hashing password and return 256 bits (long[2])
-	// Output long array
-	static SecretKey passwordHash(String password, byte[] salt)
+	// Password hashing with salt
+	static SecretKey passwordHash(char[] password)
 		throws NoSuchAlgorithmException, InvalidKeySpecException {
 
-		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION, KEYLEN);
-		SecretKeyFactory factory =  SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		PBEKeySpec pbeKeySpec = new PBEKeySpec(password);
+		SecretKeyFactory keyFac = SecretKeyFactory.getInstance(ALGORITHM);
 
-		return factory.generateSecret(spec);
-	} // end passHash()
+		return keyFac.generateSecret(pbeKeySpec);
+	} // end passwordHash()
 
 	// Get random IV
 	static IvParameterSpec getIV() {
@@ -113,49 +112,39 @@ public class BaseEncryption {
 
 
 
-	public static byte[] encryptVolume(SecretKey key, String plainText,
-	                                   IvParameterSpec iv) {
-
-		Cipher cipher;
-		byte[] retVal = null;
 
 
-		try {
 
-			cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-			cipher.doFinal(plainText.getBytes());
+	// Encrypt txt using PBE method with salt
+	public static CryptoData encryptVolume(SecretKey key, byte[] txt, byte[] salt)
+	       throws InvalidAlgorithmParameterException, InvalidKeyException,
+	       NoSuchPaddingException, NoSuchAlgorithmException,
+	       BadPaddingException, IllegalBlockSizeException, IOException {
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		} // end try... catch()
 
-		return retVal;
+		// Get parameter set for password-based encryption
+		PBEParameterSpec param = new PBEParameterSpec(salt, COUNT);
+		// Encryption
+		Cipher pbeCipher = Cipher.getInstance(ALGORITHM);
+		pbeCipher.init(Cipher.ENCRYPT_MODE, key, param);
+
+		return new CryptoData(pbeCipher.doFinal(txt), pbeCipher);
 
 	} // end encryptVolume()
 
-	// Decrypt the text using Tea Encryption and hashed password
-	// The length of hash is 44
 
-	// It will use the method from Tea.java to encrypt the txt
-	//
-	public static byte[] decryptVolume(SecretKey key, String cipherText,
-	                                   IvParameterSpec iv) {
+	// Decryption
+	public static CryptoData decryptVolume(SecretKey key, CryptoData data)
+	       throws NoSuchPaddingException, NoSuchAlgorithmException,
+	              BadPaddingException, IllegalBlockSizeException, IOException,
+	              InvalidAlgorithmParameterException, InvalidKeyException {
 
-		Cipher decryption;
-		byte[] retVal = null;
+		// Specify algorithm
+		Cipher pbeCipher = Cipher.getInstance(ALGORITHM);
+		// Initializing it with PBE Cipher with key and parameters
+		pbeCipher.init(Cipher.DECRYPT_MODE, key, data.getParams());
 
-		try {
-
-			decryption = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			decryption.init(Cipher.DECRYPT_MODE, key, iv);
-			retVal = decryption.doFinal(cipherText.getBytes());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} // end try... catch()
-
-
-		return retVal;
+		return new CryptoData(pbeCipher.doFinal(data.getCryptoByte()), pbeCipher);
 	} // end encryptVolume()
+
 } // end class()

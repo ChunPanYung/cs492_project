@@ -1,7 +1,11 @@
 package cs492.multiencryption;
 
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.AlgorithmParameters;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -37,9 +41,14 @@ public class CryptoUtil {
 	} // end stringToList()
 
 	// Convert from byte[] to String
-	public static String byteArrToStr(byte[] arr) {
+	public static String byteToStr(byte[] arr) {
 		return new String(arr, StandardCharsets.UTF_8);
 	} // end byteArrToStr()
+
+	// Convert from String to byte[]
+	public static byte[] strToByte(String s) {
+	 return s.getBytes(StandardCharsets.UTF_8);
+	}
 
 	// Convert from SecretKey to String
 	public static String keyToStr(SecretKey key) {
@@ -48,5 +57,25 @@ public class CryptoUtil {
 
 	} // end keyToStr()
 
+	// Convert the AlgorithmParameters to byte
+	public static byte[] algorToByte(Cipher c) throws IOException {
+		return c.getParameters().getEncoded();
+	} // end getAl
 
-}
+// Convert the byte to AlgorithmParameters
+	public static AlgorithmParameters byteToAlgor(byte[] b)
+	       throws IOException, NoSuchAlgorithmException {
+
+		AlgorithmParameters algor =
+			AlgorithmParameters.getInstance(BaseEncryption.getAlgorithm());
+
+		algor.init(b);
+
+		return algor;
+	} // end byteToAlgor()
+
+
+
+} // end algorToByte()
+
+

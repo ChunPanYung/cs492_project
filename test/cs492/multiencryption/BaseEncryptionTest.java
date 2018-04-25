@@ -4,9 +4,11 @@ import org.junit.jupiter.api.*;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -37,9 +39,9 @@ public class BaseEncryptionTest {
 	@Test
 	public void testPasswordHash() throws InvalidKeySpecException, NoSuchAlgorithmException {
 		// List of char array as password
-		String password1 = "pancake",
-		       password2 = "pudding",
-		       password3 = "lolipop";
+		char[] password1 = "pancake".toCharArray(),
+		       password2 = "pudding".toCharArray(),
+		       password3 = "lolipop".toCharArray();
 		// salt for each password
 		byte[] salt1 = getSalt(),
 		       salt2 = getSalt(),
@@ -50,9 +52,9 @@ public class BaseEncryptionTest {
 		          key3 = null;
 
 		try { // hash and convert into SecretKey
-			key1 = passwordHash(password1, salt1);
-			key2 = passwordHash(password2, salt2);
-			key3 = passwordHash(password3, salt3);
+			key1 = passwordHash(password1);
+			key2 = passwordHash(password2);
+			key3 = passwordHash(password3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} // end try ...catch()
@@ -95,40 +97,62 @@ public class BaseEncryptionTest {
 	@Test
 	public void encryptTest() {
 
-		String password = "pancake";
+		char[] password = "pancake".toCharArray();
 		byte[] salt = getSalt();
 		SecretKey key = null;
 
 		try { // generate key based on password and salt
-			key = BaseEncryption.passwordHash(password, salt);
+			key = BaseEncryption.passwordHash(password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} // end try...catch()
 
 		// print info
 		System.out.println("===");
+		System.out.println("Begin Encryption");
 		System.out.println("The Length of SecretKey is: " + key.getEncoded().length);
 		System.out.println("The SecretKey Algorithm is: " + key.getAlgorithm());
-		System.out.println("===\n");
+		System.out.println("The salt before encryption: " + salt.toString());
 
 		IvParameterSpec iv = BaseEncryption.getIV();
-		String plainText = "Unlimited Pancake Works!";
+		byte[] plainText = CryptoUtil.strToByte("Unlimited Pancake Works!");
 
-		byte[] cipherText = BaseEncryption.encryptVolume(key, plainText, iv);
+		CryptoData cipherText = null;
+
+
+		try { // Encryption
+			cipherText = BaseEncryption.encryptVolume(key, plainText, salt);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Encryption Failed!");
+		}
+		// End Encryption
+		System.out.println("---");
+		System.out.println("End Encryption");
+		System.out.println("===\n\n");
 
 		// Print info
-		System.out.println("===");
-		System.out.println("Password: " + password);
+		System.out.println("=== ");
+		System.out.println("Begin Decryption");
+		System.out.println("Password: " + password.toString());
 		System.out.println("Plain Text: " + plainText);
-		System.out.println("Cipher Text: " + CryptoUtil.byteArrToStr(cipherText));
+		System.out.println("Cipher Text: " +
+		                   CryptoUtil.byteToStr(cipherText.getCryptoByte()));
+		System.out.println("The salt before decryption: " + salt.toString());
 		System.out.println("---");
 
 		// Decryption and print out
-		byte[] decryptText = BaseEncryption.decryptVolume(key,
-		                     CryptoUtil.byteArrToStr(cipherText), iv);
+		CryptoData decryptText = null;
+		try {
+			decryptText = BaseEncryption.decryptVolume(key, cipherText);
+		} catch (Exception e) {
+			System.out.println("Decryption Failed!");
+			e.printStackTrace();
+		}
 
 		// print info
-		System.out.println("Decrypted Text: " + CryptoUtil.byteArrToStr(decryptText));
+		System.out.println("Decrypted Text: " +
+		                   CryptoUtil.byteToStr(decryptText.getCryptoByte()));
 		System.out.println("===");
 
 	}
