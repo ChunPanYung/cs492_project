@@ -105,6 +105,12 @@ public class BaseEncryptionTest {
 			e.printStackTrace();
 		} // end try...catch()
 
+		// print info
+		System.out.println("===");
+		System.out.println("The Length of SecretKey is: " + key.getEncoded().length);
+		System.out.println("The SecretKey Algorithm is: " + key.getAlgorithm());
+		System.out.println("===\n");
+
 		IvParameterSpec iv = BaseEncryption.getIV();
 		String plainText = "Unlimited Pancake Works!";
 

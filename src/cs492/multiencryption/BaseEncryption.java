@@ -20,6 +20,7 @@ public class BaseEncryption {
 	private static final int KEYLEN = 256;
 	private static final int ITERATION = 65536;
 	private static final byte[] SALT = {13, 99, 69};
+	private static final string ALGORITHM = "PBEWithHmacSHA256AndAES_256";
 
 
 	// Generate random number according to size
@@ -96,10 +97,9 @@ public class BaseEncryption {
 		throws NoSuchAlgorithmException, InvalidKeySpecException {
 
 		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATION, KEYLEN);
-		SecretKeyFactory secretKeyFactory =
-			SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+		SecretKeyFactory factory =  SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 
-		return secretKeyFactory.generateSecret(spec);
+		return factory.generateSecret(spec);
 	} // end passHash()
 
 	// Get random IV
