@@ -10,13 +10,13 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
 
-public class BaseEncryption {
+public class BaseCryptography {
 
 	// Class variables
 	private static final SecureRandom RANDOM = new SecureRandom();
 	private static final int COUNT = 1000;
 	private static final byte[] SALT = {13, 99, 69};
-	private static final String ALGORITHM = "PBEWithHmacSHA256AndAES_256";
+	static final String ALGORITHM = "PBEWithHmacSHA256AndAES_256";
 
 
 	public static String getAlgorithm() {
@@ -116,33 +116,60 @@ public class BaseEncryption {
 
 
 	// Encrypt txt using PBE method with salt
-	public static CryptoData encryptVolume(SecretKey key, byte[] txt, byte[] salt)
+	public static CryptoData encryptVolume(SecretKey key, CryptoData data,
+	                                       byte[] salt)
 	       throws InvalidAlgorithmParameterException, InvalidKeyException,
 	       NoSuchPaddingException, NoSuchAlgorithmException,
 	       BadPaddingException, IllegalBlockSizeException, IOException {
 
+		PBEParameterSpec params = new PBEParameterSpec(salt, COUNT);
 
-		// Get parameter set for password-based encryption
-		PBEParameterSpec param = new PBEParameterSpec(salt, COUNT);
 		// Encryption
 		Cipher pbeCipher = Cipher.getInstance(ALGORITHM);
-		pbeCipher.init(Cipher.ENCRYPT_MODE, key, param);
+		pbeCipher.init(Cipher.ENCRYPT_MODE, key, params);
 
-		return new CryptoData(pbeCipher.doFinal(txt), pbeCipher);
+		return new CryptoData(pbeCipher.doFinal(data.getCryptoByte()), pbeCipher);
 
 	} // end encryptVolume()
 
+	// Get the parameter of encryption cipher
+	// then convert it into AlgorithmParameters
+	static AlgorithmParameters getEncryptCipher(SecretKey key, byte[] salt)
+	        throws NoSuchPaddingException, NoSuchAlgorithmException,
+	               InvalidAlgorithmParameterException, InvalidKeyException {
 
-	// Decryption
-	public static CryptoData decryptVolume(SecretKey key, CryptoData data)
+		PBEParameterSpec params = new PBEParameterSpec(salt, COUNT);
+		// Encryption
+		Cipher c = Cipher.getInstance(ALGORITHM);
+		c.init(Cipher.ENCRYPT_MODE, key, params);
+
+		return c.getParameters();
+	} // end getEncryptCipher()
+
+	/*
+	   Decryption
+	   Using the same PBEParameterSpec for decryption doesn't work
+	   We will use different approach when it comes to decryption
+	*/
+	public static CryptoData decryptVolume(SecretKey key, CryptoData data,
+	                                       byte[] salt)
 	       throws NoSuchPaddingException, NoSuchAlgorithmException,
 	              BadPaddingException, IllegalBlockSizeException, IOException,
 	              InvalidAlgorithmParameterException, InvalidKeyException {
 
+		AlgorithmParameters params;
+
+		// if data.getParams() is null,
+		if (data.getParams() == null) {
+			params = getEncryptCipher(key, salt);
+		} else { // else use data.params
+			params = data.getParams();
+		}
+
 		// Specify algorithm
 		Cipher pbeCipher = Cipher.getInstance(ALGORITHM);
 		// Initializing it with PBE Cipher with key and parameters
-		pbeCipher.init(Cipher.DECRYPT_MODE, key, data.getParams());
+		pbeCipher.init(Cipher.DECRYPT_MODE, key, params);
 
 		return new CryptoData(pbeCipher.doFinal(data.getCryptoByte()), pbeCipher);
 	} // end encryptVolume()

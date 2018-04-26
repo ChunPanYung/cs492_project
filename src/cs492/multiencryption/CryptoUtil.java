@@ -67,7 +67,7 @@ public class CryptoUtil {
 	       throws IOException, NoSuchAlgorithmException {
 
 		AlgorithmParameters algor =
-			AlgorithmParameters.getInstance(BaseEncryption.getAlgorithm());
+			AlgorithmParameters.getInstance(BaseCryptography.getAlgorithm());
 
 		algor.init(b);
 

@@ -17,17 +17,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 
-import static cs492.multiencryption.BaseEncryption.getSalt;
-import static cs492.multiencryption.BaseEncryption.passwordHash;
+import static cs492.multiencryption.BaseCryptography.getSalt;
+import static cs492.multiencryption.BaseCryptography.passwordHash;
 
 
-public class BaseEncryptionTest {
+public class BaseCryptographyTest {
 
 	@Disabled
 	@Test
 	public void randomZeroes() {
 		// Call method, convert char[] to string
-		String pancake = String.valueOf(BaseEncryption.randomZeroes(100));
+		String pancake = String.valueOf(BaseCryptography.randomZeroes(100));
 		// Print
 		System.out.println("The length is " + pancake.length());
 
@@ -88,8 +88,8 @@ public class BaseEncryptionTest {
 	public void writeRead() throws IOException {
 		String pudding = "Pudding is the best dessert you can have! OwO";
 
-		BaseEncryption.saveVolume(pudding);
-		BaseEncryption.loadVolume("Pudding.txt");
+		BaseCryptography.saveVolume(pudding);
+		BaseCryptography.loadVolume("Pudding.txt");
 
 	}
 
@@ -102,49 +102,40 @@ public class BaseEncryptionTest {
 		SecretKey key = null;
 
 		try { // generate key based on password and salt
-			key = BaseEncryption.passwordHash(password);
+			key = BaseCryptography.passwordHash(password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} // end try...catch()
 
-		// print info
-		System.out.println("===");
-		System.out.println("Begin Encryption");
-		System.out.println("The Length of SecretKey is: " + key.getEncoded().length);
-		System.out.println("The SecretKey Algorithm is: " + key.getAlgorithm());
-		System.out.println("The salt before encryption: " + salt.toString());
 
-		IvParameterSpec iv = BaseEncryption.getIV();
+		IvParameterSpec iv = BaseCryptography.getIV();
 		byte[] plainText = CryptoUtil.strToByte("Unlimited Pancake Works!");
 
-		CryptoData cipherText = null;
+		CryptoData cipherText = new CryptoData(plainText);
 
 
 		try { // Encryption
-			cipherText = BaseEncryption.encryptVolume(key, plainText, salt);
+			cipherText = BaseCryptography.encryptVolume(key, cipherText, salt);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Encryption Failed!");
 		}
-		// End Encryption
-		System.out.println("---");
-		System.out.println("End Encryption");
-		System.out.println("===\n\n");
 
 		// Print info
 		System.out.println("=== ");
-		System.out.println("Begin Decryption");
-		System.out.println("Password: " + password.toString());
-		System.out.println("Plain Text: " + plainText);
+		System.out.println("PlainText: " +
+		                   CryptoUtil.byteToStr(plainText));
+		System.out.println("PlainText length: " + plainText.length);
+
 		System.out.println("Cipher Text: " +
 		                   CryptoUtil.byteToStr(cipherText.getCryptoByte()));
-		System.out.println("The salt before decryption: " + salt.toString());
+		System.out.println("CipherText length: " + cipherText.getCryptoByte().length);
 		System.out.println("---");
 
 		// Decryption and print out
 		CryptoData decryptText = null;
 		try {
-			decryptText = BaseEncryption.decryptVolume(key, cipherText);
+			decryptText = BaseCryptography.decryptVolume(key, cipherText, salt);
 		} catch (Exception e) {
 			System.out.println("Decryption Failed!");
 			e.printStackTrace();
@@ -153,6 +144,7 @@ public class BaseEncryptionTest {
 		// print info
 		System.out.println("Decrypted Text: " +
 		                   CryptoUtil.byteToStr(decryptText.getCryptoByte()));
+		System.out.println("Decrypted Text length: " + decryptText.getCryptoByte().length);
 		System.out.println("===");
 
 	}
@@ -162,4 +154,4 @@ public class BaseEncryptionTest {
 
 
 
-} // end BaseEncryptionTest()
+} // end BaseCryptographyTest()

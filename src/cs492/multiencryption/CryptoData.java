@@ -5,6 +5,7 @@ import javax.crypto.spec.PBEParameterSpec;
 import java.io.IOException;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * This class is used to pass encrypted/decrypted data
@@ -43,13 +44,36 @@ public class CryptoData {
 	} // end Constructor()
 
 
+	// Return [encrypted/decrypted] message
 	public byte[] getCryptoByte() {
 		return cryptoByte;
 	}
 
-	public void setCryptoByte(byte[] cryptoByte) {
-		this.cryptoByte = cryptoByte;
+	// Return part of message based on offset
+	public byte[] getCryptoByte(int offset) {
+	return Arrays.copyOfRange(cryptoByte, offset, cryptoByte.length);
 	}
+
+	// Return [encrypted/decrypted] message
+	public void setCryptoByte(byte[] arr) {
+		cryptoByte = arr;
+	}
+
+	// Return part of message based on offset
+	public void setCryptoByte(byte[] arr, int offset) {
+
+		// Throw exception if the whole array can't be copied
+		if (arr.length + offset != cryptoByte.length)
+			throw new IndexOutOfBoundsException("Can't copy the whole array!");
+
+		// use for loop to copy
+		while ( (offset < cryptoByte.length) && (offset < arr.length) ) {
+			cryptoByte[offset] = arr[offset];
+			offset++;
+		}
+	}
+
+
 
 	public void setParams(Cipher c) throws IOException {
 		this.params = c.getParameters().getEncoded();
@@ -58,7 +82,7 @@ public class CryptoData {
 	public AlgorithmParameters getParams() throws NoSuchAlgorithmException,
 	                                              IOException {
 		AlgorithmParameters algorParams =
-			AlgorithmParameters.getInstance(BaseEncryption.getAlgorithm());
+			AlgorithmParameters.getInstance(BaseCryptography.getAlgorithm());
 
 		algorParams.init(params);
 
