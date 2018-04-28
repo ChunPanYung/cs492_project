@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 
-import static cs492.multiencryption.BaseCryptography.getSalt;
-import static cs492.multiencryption.BaseCryptography.passwordHash;
+
 
 
 public class BaseCryptographyTest {
@@ -43,18 +42,18 @@ public class BaseCryptographyTest {
 		       password2 = "pudding".toCharArray(),
 		       password3 = "lolipop".toCharArray();
 		// salt for each password
-		byte[] salt1 = getSalt(),
-		       salt2 = getSalt(),
-		       salt3 = getSalt();
+		byte[] salt1 = BaseCryptography.getSalt(),
+		       salt2 = BaseCryptography.getSalt(),
+		       salt3 = BaseCryptography.getSalt();
 		// SecretKey (hash of both salt and password)
 		SecretKey key1 = null,
 		          key2 = null,
 		          key3 = null;
 
 		try { // hash and convert into SecretKey
-			key1 = passwordHash(password1);
-			key2 = passwordHash(password2);
-			key3 = passwordHash(password3);
+			key1 = BaseCryptography.passwordHash(password1);
+			key2 = BaseCryptography.passwordHash(password2);
+			key3 = BaseCryptography.passwordHash(password3);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} // end try ...catch()
@@ -93,12 +92,12 @@ public class BaseCryptographyTest {
 
 	}
 
-
+	@Disabled
 	@Test
 	public void encryptTest() {
 
 		char[] password = "pancake".toCharArray();
-		byte[] salt = getSalt();
+		byte[] salt = BaseCryptography.getSalt();
 		SecretKey key = null;
 
 		try { // generate key based on password and salt
@@ -149,9 +148,101 @@ public class BaseCryptographyTest {
 
 	}
 
+	// This is used for testing SymmetricCryptography encryption method 1
+	@Disabled
+	@Test
+	public void testEncryption1()
+	       throws IllegalBlockSizeException,
+	              InvalidKeyException, BadPaddingException, NoSuchAlgorithmException,
+	              NoSuchPaddingException {
+
+		// password and plaintext
+		char[] password = "pudding".toCharArray();
+		String str = "Unlimited Pancake Works!";
+
+		CryptoData data = new CryptoData(CryptoUtil.strToByte(str));
+		SecretKey key = null;
+
+		try {
+			key = BaseCryptography.passwordHash(password);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+		}
+
+		data = SymmetricCryptography.encryptTry1(key, data);
+
+		System.out.println("The plaintext length is: " + str.length());
+		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
+		System.out.println("The ciphertext is: " + data.getCryptoByte().toString());
+
+	}
+
+	// This is used for testing SymmetricCryptography encryption method 2
+	@Disabled
+	@Test
+	public void testEncryption2()
+	       throws NoSuchPaddingException, InvalidKeyException,
+	              NoSuchAlgorithmException, IllegalBlockSizeException,
+	              BadPaddingException, InvalidAlgorithmParameterException {
+
+		encryption2("pudding".toCharArray(), "Unlimited Pancake Works!");
+		encryption2("pancake".toCharArray(), "I can't live without Syrup!");
+		encryption2("lollipop".toCharArray(), "Excalibur");
+
+
+	}
+
+
+	// for testEncryption2() method
+	private void encryption2(char[] password, String str)
+	       throws NoSuchPaddingException, InvalidKeyException,
+						NoSuchAlgorithmException, IllegalBlockSizeException,
+						BadPaddingException, InvalidAlgorithmParameterException {
+
+		CryptoData data = new CryptoData(CryptoUtil.strToByte(str));
+
+
+		data = SymmetricCryptography.encryptTry2(data);
+
+		System.out.println("The plaintext length is: " + str.length());
+		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
+		System.out.println("The ciphertext is: " + data.getCryptoByte().toString());
+	}
+
+	@Test
+	public void testEncryptTry3() throws InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
+
+		// password
+		char[] password1 = "pancake".toCharArray();
+
+		// Get salt
+		byte[] salt = BaseCryptography.getSalt();
+		// Get key
+		SecretKey key = SymmetricCryptography.passwordHash(password1, salt);
+
+		// print out info
+		encryption3(key, salt, "Pudding Art Online");
+
+
+	}
+
+	// for testEncryption2() method
+	private void encryption3(SecretKey key, byte[] iv, String str)
+					throws NoSuchPaddingException, InvalidKeyException,
+					NoSuchAlgorithmException, IllegalBlockSizeException,
+					BadPaddingException, InvalidAlgorithmParameterException {
+
+		CryptoData data = new CryptoData(CryptoUtil.strToByte(str));
+
+		data = SymmetricCryptography.encryptTry3(data, key, iv);
 
 
 
+		System.out.println("The plaintext is: " + str);
+		System.out.println("The plaintext length is: " + str.length());
+		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
+		System.out.println("The ciphertext is: " + data.getCryptoByte().toString());
+	}
 
-
-} // end BaseCryptographyTest()
+}

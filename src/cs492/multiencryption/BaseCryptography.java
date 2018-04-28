@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class BaseCryptography {
 
 	// Class variables
-	private static final SecureRandom RANDOM = new SecureRandom();
+	static final SecureRandom RANDOM = new SecureRandom();
 	private static final int COUNT = 1000;
 	private static final byte[] SALT = {13, 99, 69};
 	static final String ALGORITHM = "PBEWithHmacSHA256AndAES_256";
