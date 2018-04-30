@@ -85,10 +85,10 @@ public class BaseCryptographyTest {
 	@Disabled
 	@Test
 	public void writeRead() throws IOException {
-		String pudding = "Pudding is the best dessert you can have! OwO";
+		byte[] pudding = "Pudding is the best dessert you can have! OwO".getBytes();
 
 		BaseCryptography.saveVolume(pudding);
-		BaseCryptography.loadVolume("Pudding.txt");
+		BaseCryptography.loadVolume();
 
 	}
 
@@ -107,7 +107,7 @@ public class BaseCryptographyTest {
 		} // end try...catch()
 
 
-		IvParameterSpec iv = BaseCryptography.getIV();
+		IvParameterSpec iv = BaseCryptography.getIV(salt);
 		byte[] plainText = CryptoUtil.strToByte("Unlimited Pancake Works!");
 
 		CryptoData cipherText = new CryptoData(plainText);
@@ -170,7 +170,7 @@ public class BaseCryptographyTest {
 		} catch (InvalidKeySpecException e) {
 		}
 
-		data = SymmetricCryptography.encryptTry1(key, data);
+		data = testCryptoMethod.encryptTry1(key, data);
 
 		System.out.println("The plaintext length is: " + str.length());
 		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
@@ -203,7 +203,7 @@ public class BaseCryptographyTest {
 		CryptoData data = new CryptoData(CryptoUtil.strToByte(str));
 
 
-		data = SymmetricCryptography.encryptTry2(data);
+		data = testCryptoMethod.encryptTry2(data);
 
 		System.out.println("The plaintext length is: " + str.length());
 		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
@@ -235,14 +235,14 @@ public class BaseCryptographyTest {
 
 		CryptoData data = new CryptoData(CryptoUtil.strToByte(str));
 
-		data = SymmetricCryptography.encryptTry3(data, key, iv);
+		data = testCryptoMethod.encryptTry3(data, key, iv);
 
 
 
 		System.out.println("The plaintext is: " + str);
 		System.out.println("The plaintext length is: " + str.length());
 		System.out.println("The ciphertext length is: " + data.getCryptoByte().length);
-		System.out.println("The ciphertext is: " + data.getCryptoByte().toString());
+		CryptoUtil.printByte(data.getCryptoByte());
 	}
 
 }

@@ -75,6 +75,24 @@ public class CryptoUtil {
 	} // end byteToAlgor()
 
 
+	// Method for printing byte by byte
+	public static void printByte(byte[] b) {
+
+		StringBuilder builder = new StringBuilder(100);
+
+		for (int i = 0; i < b.length; i++) {
+			builder.append((char) b[i]);
+		}
+
+		System.out.println(builder);
+
+	}
+
+	// print byte length
+	public static void printByteLength(byte[] b) {
+		System.out.println("The byte length is: " + b.length);
+	}
+
 
 } // end algorToByte()
 
