@@ -74,7 +74,7 @@ public class Main {
 	private static void create(String[] args) {
 
 		// Create a volume that fills with random zeroes
-		byte[] b = BaseCryptography.randomZeroes(100);
+		byte[] b = BaseCryptography.randomZeroes(Integer.parseInt(args[1]));
 		// Get salt and save it into file
 		byte[] salt = BaseCryptography.getSalt();
 		// Save both volume and salt
@@ -93,7 +93,9 @@ public class Main {
 	// Second one indicates password;
 	// Third one indicates offset (optional).
 	private static void encrypt(String[] args)
-	        throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
+	        throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
+	               IllegalBlockSizeException, InvalidKeyException, BadPaddingException,
+	               InvalidAlgorithmParameterException, NoSuchPaddingException {
 
 		// Preparation: load salt and volume, then process info to get SecretKey and iv
 		byte[] txt = BaseCryptography.loadVolume(); // load volume
@@ -115,7 +117,9 @@ public class Main {
 	}
 
 	private static void decrypt(String[] args)
-	        throws IOException, InvalidKeySpecException, NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidAlgorithmParameterException, NoSuchPaddingException {
+	        throws IOException, InvalidKeySpecException, NoSuchAlgorithmException,
+	               IllegalBlockSizeException, InvalidKeyException, BadPaddingException,
+	               InvalidAlgorithmParameterException, NoSuchPaddingException {
 
 			// Preparation: load salt and volume, then process info to get SecretKey and iv
 			byte[] txt = BaseCryptography.loadVolume(); // load volume
